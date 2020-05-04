@@ -5,27 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="">
-</head>
+</head> 
 <body>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+    
     <script>
+        
 
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera(75, window.innerWidth/innerHeight, 0.1, 1000);
         var renderer = new THREE.WebGLRenderer({antialias: true});
-        renderer.setClearColor("#e5e5e5");
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
 
-            camera.updateProjectionMatrix();
-        })
+    //create the scene
+    var camera, scene, renderer, stars=[];
+    //var scene = new THREE.Scene( );
+    //var ratio = window.innerWidth/window.innerHeight;
+    //create the perspective camera
+    //for parameters see https://threejs.org/docs/#api/cameras/PerspectiveCamera
 
-        renderer.render(scene, camera);
+function init() {
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000);
 
+    //create the orthographics camera
+    //for parameters see https://threejs.org/docs/#api/cameras/OrthographicCamera
+    //var scale=15/(window.innerWidth+window.innerHeight);
+    //var camera = new THREE.OrthographicCamera( -window.innerWidth*scale, window.innerWidth*scale, window.innerHeight*scale, -window.innerHeight*scale, 0.1, 1000 );
+
+    //set the camera position
+    camera.position.z=5;
+
+    //Scene
+    scene = new THREE.Scene();
+    // and the direction
+	  //camera.lookAt(0,0,1);
+
+    //create the webgl renderer
+    var renderer = new THREE.WebGLRenderer( );
+
+    //set the size of the rendering window
+    renderer.setSize(window.innerWidth,window.innerHeight);
+
+    //add the renderer to the current document
+    document.body.appendChild(renderer.domElement );
+  }
+
+    //----------------------------------------------------------------------
+
+function addSphere(){
+
+  //adding random spherical particles
+  //loop to go through z positions between -1000 to 1000, adding particles
+  for (var z= -1000; z < 1000; z+= 20) {
+
+    //making a sphere
+    var geometry = new THREE.sphereGeometry(0.5, 32, 32)
+    var matrial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var sphere = new THREE.Mesh(geometry, material)
+
+    //giving spheres random x and y positions between -500 and 500
+    sphere.position.x = Math.random() * 1000-500; 
+    sphere.position.y = Math.random() * 1000-500; 
+
+    //setting the z position to where it is in the camera view. 
+    sphere.position.z = z; 
+
+    //scale it up
+    sphere.scale.x = sphere.scale.y = 2; 
+
+    //add sphere to the scene 
+    scene.add(sphere);
+
+    //pushing the sphere to the stars array 
+    stars.push(sphere);
+  }
+  
+}
+
+function animateStars() {
+
+  // looping through each star 
+  for(var i=0; i<stars.length; i++) {
+    stars = stars[i];
+
+  // moving forward 
+  star.position.z += i/10;
+
+  //if a partical is too close move it to the back 
+  if(start.position.z>1000) star.positon.z -= 2000; 
+  }
+}
+
+function render() {
+
+  //get the frame 
+  requestAnimationFrame( render ); 
+
+  //render the scene 
+  renderer.render(scene, camera);
+  animateStars();
+}
+
+  init();
+  addSphere();
+  render();
     </script>
 </body>
 </html>
